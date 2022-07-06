@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "./src/index.js",
   "scripts": {
-    "build": "nodemon ./src/utils/deploy-commands.js",
-    "start": "nodemon ."
+    "buildCommand": "set VERSION=\"1.0.0\" && nodemon ./src/utils/deploy-commands.js",
+    "startBot": "set VERSION=\"1.0.0\" && nodemon ."
   },
   "author": "France Alliance",
   "license": "MIT",
