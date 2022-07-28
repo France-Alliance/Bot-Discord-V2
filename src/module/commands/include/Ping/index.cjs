@@ -1,6 +1,5 @@
-const { SlashCommandBuilder } = require('@discordjs/builders');
-
-const command = new SlashCommandBuilder()
+const { SlashCommandBuilder } = require('@discordjs/builders'),
+  command = new SlashCommandBuilder()
     .setName('ping')
     .setDescription('Replies with "Pong!" and latency !')
     .toJSON(),

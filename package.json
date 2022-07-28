@@ -4,8 +4,9 @@
   "main": "./src/index.js",
   "type": "module",
   "scripts": {
-    "build": "set VERSION=\"1.0.0\" && node ./src/utils/deploy-commands.js",
-    "start": "set VERSION=\"1.0.0\" && node ."
+    "build": "node ./src/utils/deploy-commands.js",
+    "start": "set DEV=0 && node .",
+    "dev": "set DEV=1 && node ."
   },
   "author": "France Alliance",
   "license": "MIT",

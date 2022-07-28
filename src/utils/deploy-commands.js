@@ -1,25 +1,18 @@
-import { readdirSync } from 'node:fs';
 import { env } from 'node:process';
 
 import { REST } from '@discordjs/rest';
 import { Routes } from 'discord-api-types/v10';
-
 import { config } from 'dotenv';
+
+import { searchJSCommand } from './utils.js';
 
 config();
 
 const getCommand = async () => {
-  const commands = [];
-  const commandFoler = readdirSync('./src/module/commands/include');
-
-  for (const commandFiles of commandFoler) {
-    await import(`../module/commands/include/${commandFiles}/index.cjs`)
-      .then((module) => {
-        console.log(module.command);
-        commands.push(module.command);
-      })
-      .catch((err) => console.error(err));
-  }
+  var commands = await searchJSCommand('module/commands/include', !0);
+  commands.forEach((c, idx) => {
+    commands[idx] = c.command;
+  });
   return commands;
 };
 

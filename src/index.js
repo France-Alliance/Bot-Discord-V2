@@ -1,35 +1,29 @@
 import { env } from 'node:process';
 import { readdirSync } from 'node:fs';
-import { Client, Collection, Intents } from 'discord.js';
+import { Client, Collection, GatewayIntentBits } from 'discord.js';
 import dotenv from 'dotenv';
-import { update } from './utils/update.js';
 import Members from './module/flux/include/Members/index.js';
+import update from './utils/update.js';
+import { searchJSCommand } from './utils/utils.js';
 
 dotenv.config();
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection();
 
 update();
 
 try {
-  // console.log(readdirSync('./src/module/commands/include'));
-  const commandFoler = readdirSync('./src/module/commands/include/');
-
-  for (const commandFiles of commandFoler) {
-    import(`./module/commands/include/${commandFiles}/index.cjs`)
-      .then((module) => {
-        client.commands.set(module.command.name, module);
-      })
-      .catch((err) => console.error(err));
-  }
+  await searchJSCommand('module/commands/include', !1, (module) => {
+    client.commands.set(module.command.name, module);
+  });
 
   client.once('ready', () => {
     console.log('Ready!');
   });
 
   client.on('interactionCreate', async (interaction) => {
-    if (!interaction.isCommand()) return;
+    if (!interaction.isChatInputCommand()) return;
 
     const command = client.commands.get(interaction.commandName);
 
@@ -50,6 +44,6 @@ try {
 
   client.login(env.TOKEN);
 } catch (err) {
-  console.log('Not found file in ./commands/include !');
+  console.log('Not found file in commands/include !');
   console.error(err);
 }
