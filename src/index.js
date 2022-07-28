@@ -1,11 +1,9 @@
-const { readdirSync } = require('node:fs');
-const { env } = require('node:process');
-
-const { Client, Collection, Intents } = require('discord.js');
-const dotenv = require('dotenv');
-
-const { members } = require('./module/flux/members.js');
-const { update } = require('./utils/update.js');
+import { env } from 'node:process';
+import { readdirSync } from 'node:fs';
+import { Client, Collection, Intents } from 'discord.js';
+import dotenv from 'dotenv';
+import { update } from './utils/update.js';
+import Members from './module/flux/include/Members/index.js';
 
 dotenv.config();
 const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
@@ -15,13 +13,15 @@ client.commands = new Collection();
 update();
 
 try {
-  const commandFiles = readdirSync('./src/module/commands/include/').filter((file) =>
-    file.endsWith('.js')
-  );
+  // console.log(readdirSync('./src/module/commands/include'));
+  const commandFoler = readdirSync('./src/module/commands/include/');
 
-  for (const file of commandFiles) {
-    const command = require(`./module/commands/include/${file}`);
-    client.commands.set(command.data.name, command);
+  for (const commandFiles of commandFoler) {
+    import(`./module/commands/include/${commandFiles}/index.cjs`)
+      .then((module) => {
+        client.commands.set(module.command.name, module);
+      })
+      .catch((err) => console.error(err));
   }
 
   client.once('ready', () => {
@@ -45,11 +45,11 @@ try {
     }
   });
 
-  members.join(client);
-  members.exit(client);
+  Members.join(client);
+  Members.exit(client);
 
   client.login(env.TOKEN);
 } catch (err) {
-  console.log('Not found file in ./commands !');
-  console.error(err)
+  console.log('Not found file in ./commands/include !');
+  console.error(err);
 }

@@ -1,10 +1,10 @@
-const { get } = require('node:https');
-const { env } = require('node:process');
-const { exec } = require('node:child_process');
+import { get } from 'node:https';
+import { env } from 'node:process';
+import { exec } from 'node:child_process';
 
-const dotenv = require('dotenv');
+import { config } from 'dotenv';
 
-dotenv.config();
+config();
 
 const update = () => {
   var data;
@@ -38,4 +38,5 @@ const update = () => {
   )
 };
 
-module.exports.update = update;
+const _update = update;
+export { _update as update };

@@ -1,15 +1,15 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
-module.exports = {
-  data: new SlashCommandBuilder()
+const command = new SlashCommandBuilder()
     .setName('ping')
-    .setDescription('Replies with Pong and latency !'),
-  async execute(interaction) {
-    return interaction.reply(
+    .setDescription('Replies with "Pong!" and latency !')
+    .toJSON(),
+  execute = async (interaction) =>
+    interaction.reply(
       `For real, latency is ${
         (await interaction.channel.send('Pong !')).createdTimestamp -
         interaction.createdTimestamp
       }ms`
     );
-  },
-};
+
+module.exports = { command, execute };
