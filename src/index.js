@@ -16,6 +16,7 @@ art();
 
 update();
 
+
 try {
   await searchJSCommand('module/commands/include', !1, (module) => {
     client.commands.set(module.command.name, module);
