@@ -5,11 +5,14 @@ import dotenv from 'dotenv';
 import Members from './module/flux/include/Members/index.js';
 import update from './utils/update.js';
 import { searchJSCommand } from './utils/utils.js';
+import { art, info, activity } from './module/functions/Presentation.js';
 
 dotenv.config();
 const client = new Client({ intents: [GatewayIntentBits.Guilds] });
 
 client.commands = new Collection();
+
+art();
 
 update();
 
@@ -19,7 +22,10 @@ try {
   });
 
   client.once('ready', () => {
-    console.log('Ready!');
+    console.log("\r");
+    activity(client);
+    info(client);
+    console.log("\r\r");
   });
 
   client.on('interactionCreate', async (interaction) => {
