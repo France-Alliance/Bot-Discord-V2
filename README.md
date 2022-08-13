@@ -9,10 +9,10 @@
 - [Bot-Discord-V2](#Bot-Discord-V2)
 	- [Table of content](#table-of-content)
 	- [Introduction](#introduction)
-	- [Setup project](#Setup project)
-        - [add `.env` file](#add `.env` file)
-        - [Install dependencies](#Install dependencies)
-        - [Run project](#Run project)
+	- [Setup project](#setup-project)
+        - [add `.env` file](#add-env-file)
+        - [Install dependencies](#install-dependencies)
+        - [Run project](#run-project)
 
 
 ## Introduction
