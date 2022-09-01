@@ -1,21 +1,13 @@
 import { env } from 'node:process';
-import {
-  existsSync,
-  writeFile,
-  mkdir,
-  writeFileSync,
-  readFileSync,
-} from 'node:fs';
-import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'url';
 import { Client, Collection, IntentsBitField } from 'discord.js';
 import dotenv from 'dotenv';
 import Members from './module/flux/include/Members/index.js';
 import update from './utils/update.js';
 import { searchJSCommand } from './utils/utils.js';
 import ready from './utils/ready.js';
-
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import { logs } from './utils/logs.cjs';
+import { schedule } from 'node-cron';
+import run from './utils/scrapper.js';
 
 dotenv.config();
 
@@ -23,6 +15,7 @@ const Intents = new IntentsBitField(3276799);
 //3276799
 //[GatewayIntentBits.Guilds]
 const client = new Client({ intents: Intents });
+let middlewares = [];
 
 client.commands = new Collection();
 
@@ -41,7 +34,13 @@ update();
 try {
   await searchJSCommand('module/commands/include', !1, (module) => {
     client.commands.set(module.command.name, module);
+    if (module.middleware) middlewares.push(module.middleware);
   });
+
+  // schedule('6 1 * * *', () => {
+  //   run();
+  // });
+  run()
 
   client.once('ready', () => {
     console.log('\r');
@@ -55,6 +54,14 @@ try {
     const command = client.commands.get(interaction.commandName);
 
     if (!command) return;
+    var option = '';
+    interaction.options.data.length === 0
+      ? (option = 'Aucune option à était passé')
+      : interaction.options.data.forEach((opt) => {
+          option += `\n - ${opt.name} = ${opt.value}`;
+        });
+
+    logs('info', interaction, option, !0);
 
     try {
       await command.execute(interaction);
@@ -67,38 +74,11 @@ try {
   });
 
   // TODO: Add Logs each commands
-  // client.on('messageCreate', async (message) => {
-  //   var GUILD = message.guildId;
-  //   var AUTHOR = message.author.id;
-  //   var TIMESTAMP = message.createdTimestamp;
-
-  //   var dirPath = join(__dirname, `/data/lm`);
-  //   var filePath = join(dirPath, `/${GUILD}.json`);
-
-  //   if (existsSync(dirPath)) {
-  //     //console.log("Directory exists !");
-  //   } else {
-  //     //console.log("Directory not found.");
-  //     mkdir(dirPath, function (err) {
-  //       if (err) throw err;
-  //       //console.log("Directory is created.");
-  //     });
-  //   }
-
-  //   if (existsSync(filePath)) {
-  //     //console.log(`${GUILD}.json exist`);
-  //   } else {
-  //     //console.log(`${GUILD}.json don't exist`);
-  //     writeFile(filePath, '{}', function (err) {
-  //       if (err) throw err;
-  //       //console.log("File is created successfully.");
-  //     });
-  //   }
-
-  //   const data = JSON.parse(readFileSync(filePath));
-  //   data[AUTHOR] = `${Number(TIMESTAMP)}`;
-  //   writeFileSync(filePath, JSON.stringify(data, null, 4));
-  // });
+  client.on('messageCreate', async (message) => {
+    middlewares.forEach((middleware) => {
+      middleware(message);
+    });
+  });
 
   Members.join(client);
   Members.exit(client);

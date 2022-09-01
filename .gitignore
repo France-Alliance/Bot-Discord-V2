@@ -6,3 +6,6 @@ pnpm-lock.yaml
 *.log
 .history
 */data/*/*.json
+*.pyc
+/src/dist/scrapper/Drivers
+/src/dist/scrapper/out

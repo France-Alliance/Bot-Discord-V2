@@ -5,6 +5,7 @@ import { Routes } from 'discord-api-types/v10';
 import { config } from 'dotenv';
 
 import { searchJSCommand } from './utils.js';
+import { mkdir } from 'node:fs';
 
 config();
 
@@ -12,6 +13,13 @@ const getCommand = async () => {
   var commands = await searchJSCommand('module/commands/include', !0);
   commands.forEach((c, idx) => {
     commands[idx] = c.command;
+    mkdir(
+      './src/logs/' + c.command.name.toUpperCase(),
+      { recursive: !0 },
+      (err) => {
+        if (err) throw err;
+      },
+    );
   });
   return commands;
 };

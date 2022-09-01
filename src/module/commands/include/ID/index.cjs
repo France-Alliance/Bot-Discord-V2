@@ -9,7 +9,7 @@ const { SlashCommandBuilder } = require('@discordjs/builders'),
     return user
       ? interaction.reply(`${user.username} id: ${user.id}`)
       : interaction.reply(
-          `${interaction.user.username} id: ${interaction.user.id}`
+          `${interaction.user.username} id: ${interaction.user.id}`,
         );
   };
 
